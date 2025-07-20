@@ -8,7 +8,6 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-
   return (
     <div className="flex flex-col items-center min-h-screen bg-background">
       <h1 className="mt-4 text-foreground font-Inter text-center text-4xl sm:text-5xl lg:text-6xl">

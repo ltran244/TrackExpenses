@@ -45,7 +45,7 @@ export default function Login(props: LoginProps) {
         <span className="mt-5 text-foreground text-4xl">
           Login
         </span>
-        <span className="mt-5 mb-2 text-foreground text-2xl">
+        <span className="mt-3 mb-2 text-foreground text-2xl">
           Username/Email
         </span>
         <input className="text-foreground border-1 text-xl w-2xs h-[50px] pl-2 pr-2"
@@ -89,7 +89,7 @@ export default function Login(props: LoginProps) {
           </Link>
         </div>
       </div>
-      <button className="mt-10 bg-primary hover:bg-primary-hover border-1 w-3xs h-[50px] rounded-2xl flex justify-center items-center"
+      <button className="mt-6 bg-primary hover:bg-primary-hover border-1 w-3xs h-[50px] rounded-2xl flex justify-center items-center"
         onClick={() => {setBadAttempt(!badAttempt)}}>
         <span className="font-Inter text-center text-lg">
           Login With Google

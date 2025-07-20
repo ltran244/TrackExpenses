@@ -1,5 +1,6 @@
-import { useNavigate , NavLink } from "react-router";
+import { useNavigate , redirect } from "react-router";
 import {apiUrl} from "../../config/api";
+
 export default function dashboard () {
   const navigate = useNavigate();
   async function handleLogout() {

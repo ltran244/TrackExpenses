@@ -9,32 +9,34 @@ export const shorthands = undefined;
  * @returns {Promise<void> | void}
  */
 export const up = (pgm) => {
-  pgm.createTable('users', {
-    id: { 
-      type: ('uuid'),
+  pgm.createTable('categories', {
+    id: {
+      type: 'uuid',
       primaryKey: true,
       default: pgm.func('gen_random_uuid()')
     },
-    username: { 
-      type: ('varchar(20)'), 
-      notNull: true 
-    },
-    email: { 
-      type: ('varchar(254)'), 
+    userId: {
+      type: 'uuid',
       notNull: true,
-      unique: true
+      references: '"users"',
+      onDelete: 'cascade'
     },
-    password: { 
-      type: ('varchar(100)'), 
+    name: {
+      type: 'varchar(50)',
+      notNull: true
+    },
+    createdAt: {
+      type: 'timestamp',
       notNull: true,
-      unique: false
+      default: pgm.func('now()')
     },
-    googleId: { 
-      type: ('TEXT'), 
-      notNull: false, 
-      unique: true 
+    color:{
+      type: 'varchar(7)',
+      notNull: false,
+      default: '#000000' // Default color if not specified
     },
   });
+  pgm.addConstraint('categories', 'categories_name_check',  'CHECK (trim(name) != \'\')');
 };
 
 /**
@@ -43,5 +45,5 @@ export const up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 export const down = (pgm) => {
-  pgm.dropTable('users');
+  pgm.dropTable('categories');
 };

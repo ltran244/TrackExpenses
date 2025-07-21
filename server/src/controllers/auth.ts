@@ -44,13 +44,12 @@ export const login = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   try{
-    const userName = req.body.username as string;
+    const userName = req.body.userName as string;
     const email = req.body.email as string;
     const password = req.body.password as string;
-    if (!userName ||  !email || !password) {
+    if (!userName || !email || !password) {
       return res.status(400).json({ error: "Missing something" });
     }
-    console.log("Registration attempt with:", { userName, email, password });
     // Check if username or email already exists
     const checkExist = await db.query("SELECT username, email FROM users WHERE username = $1 OR email = $2", [userName, email]);
     const existingName = checkExist.rows.some((row) => row.username === userName);
@@ -64,12 +63,10 @@ export const register = async (req: Request, res: Response) => {
     if (validAttempt.emailError || validAttempt.nameError || validAttempt.invalidEmail || validAttempt.passwordError) {
       return res.status(400).json({ error: "Invalid registration attempt", details: validAttempt });
     }
-    // Insert new user into the database (DELETE RETURN * IN PRODUCTION)
     const result = await db.query(
-      "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *",
+      "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
       [userName, email, await bcrypt.hash(password, 10)]
     );
-    console.log("User registered:", result.rows[0]);
     return res.status(201).json({ message: "Account Successfully Registered" });
   }
   catch (error) {

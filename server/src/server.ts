@@ -1,5 +1,6 @@
 import express from 'express';
 import authRouter from './routes/auth';
+import userRouter from './routes/user';
 import cors from 'cors';
 
 const app = express();
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 3000;
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
         app.use("/auth", authRouter);
+        app.use("/user", userRouter);
         app.listen(PORT, () => {
             console.log(`Server is successfully running on port ${PORT}`);
         });

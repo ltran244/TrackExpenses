@@ -3,12 +3,6 @@ import db from "../config/db.config"
 import bcrypt from 'bcryptjs';
 import { signJwt } from '../utils/jwt';
 
-export const test = async ( req: Request, res: Response,) => {
-  const result = await db.query("SELECT name FROM pgmigrations ");
-  console.log("Used");
-  return res.status(200).json(result.rows[0]);
-};
-
 export const login = async (req: Request, res: Response) => {
   try{
     const name = req.body.name as string;
@@ -16,7 +10,6 @@ export const login = async (req: Request, res: Response) => {
     if (!name || !password) {
       return res.status(400).json({ error: "Missing name or password" });
     }
-    console.log("Login attempt with:", { name, password });
     // Check if user exists ()
     const result = await db.query("SELECT * FROM users WHERE username = $1 OR email = $1", [name]);
     if (result.rows.length === 0) {
@@ -25,7 +18,7 @@ export const login = async (req: Request, res: Response) => {
     if (!await bcrypt.compare(password, result.rows[0].password)) {
       return res.status(401).json({ error: "Invalid email/username or password" });
     }
-    const token = signJwt({ id:result.rows[0].id });
+    const token = signJwt({ id:result.rows[0].id,});
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
@@ -33,7 +26,6 @@ export const login = async (req: Request, res: Response) => {
       maxAge: 3600000 // 1 hour
     });
     // Successful login
-    console.log("User logged in:", result.rows[0]);
     return res.status(200).json({ message: "Login successful" });
   }
   catch (error) {
@@ -89,21 +81,3 @@ export const logout = async (req: Request, res: Response) => {
   }
 }
 
-export const deleteUser = async (req: Request, res: Response) => {
-  try {
-    console.log(req);
-    const userId = req.params.id;
-    console.log("Delete user attempt with ID:", userId);
-    if (!userId) {
-      return res.status(400).json({ error: "User ID is required" });
-    }
-    const result = await db.query("DELETE FROM users WHERE id = $1 RETURNING *", [userId]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User not founds" });
-    }
-    return res.status(200).json({ message: "User deleted successfully", user: result.rows[0] });
-  } catch (error) {
-    console.error("Error during user deletion:", error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-}

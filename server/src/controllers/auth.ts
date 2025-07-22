@@ -11,7 +11,8 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Missing name or password" });
     }
     // Check if user exists ()
-    const result = await db.query("SELECT * FROM users WHERE username = $1 OR email = $1", [name]);
+    const result = await db.query("SELECT * FROM users WHERE LOWER(username) = LOWER($1) OR LOWER(email) = LOWER($1)", [name]);
+    
     if (result.rows.length === 0) {
       return res.status(401).json({ error: "Invalid email/username or password" });
     }
@@ -29,7 +30,6 @@ export const login = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Login successful" });
   }
   catch (error) {
-    console.error("Error during login:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -43,9 +43,9 @@ export const register = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Missing something" });
     }
     // Check if username or email already exists
-    const checkExist = await db.query("SELECT username, email FROM users WHERE username = $1 OR email = $2", [userName, email]);
-    const existingName = checkExist.rows.some((row) => row.username === userName);
-    const existingEmail = checkExist.rows.some((row) => row.email === email);
+    const checkExist = await db.query("SELECT username, email FROM users WHERE LOWER(username) = LOWER($1) OR LOWER(email) = LOWER($2)", [userName, email]);
+    const existingName = checkExist.rows.some((row) => row.username.toLowerCase() === userName.toLowerCase());
+    const existingEmail = checkExist.rows.some((row) => row.email.toLowerCase() === email.toLowerCase());
     const validAttempt = {
       invalidEmail: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) === false,
       emailError: existingEmail,
@@ -62,7 +62,6 @@ export const register = async (req: Request, res: Response) => {
     return res.status(201).json({ message: "Account Successfully Registered" });
   }
   catch (error) {
-    console.error("Error during registration:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -76,7 +75,6 @@ export const logout = async (req: Request, res: Response) => {
     });
     return res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-    console.error("Error during logout:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 }

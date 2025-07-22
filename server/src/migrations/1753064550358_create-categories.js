@@ -30,13 +30,14 @@ export const up = (pgm) => {
       notNull: true,
       default: pgm.func('now()')
     },
-    color:{
+    color: {
       type: 'varchar(7)',
-      notNull: false,
-      default: '#000000' // Default color if not specified
+      notNull: true,
+      default: pgm.func("'#000000'")
     },
   });
   pgm.addConstraint('categories', 'categories_name_check',  'CHECK (trim(name) != \'\')');
+  pgm.addConstraint('categories', 'unique_user_category', 'UNIQUE ("userId", name)');
 };
 
 /**

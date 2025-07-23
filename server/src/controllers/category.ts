@@ -1,7 +1,7 @@
 import { Request, Response }from 'express';
 import db from "../config/db.config"
 
-export const createCategories = async (req: Request, res: Response) => {
+export const createCategory = async (req: Request, res: Response) => {
   try{
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -40,7 +40,7 @@ export const createCategories = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteCategories = async (req: Request, res: Response) => {
+export const deleteCategory = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -49,7 +49,7 @@ export const deleteCategories = async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(400).json({ error: "User ID is required" });
     }
-    const { categoryId } = req.body;
+    const categoryId = req.body.categoryId;
     if (!categoryId) {
       return res.status(400).json({ error: "Category ID is required" });
     }
@@ -63,7 +63,7 @@ export const deleteCategories = async (req: Request, res: Response) => {
   }
 };
 
-export const getCategories = async (req: Request, res: Response) => {
+export const getCategory = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });

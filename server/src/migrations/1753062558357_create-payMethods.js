@@ -36,6 +36,7 @@ export const up = (pgm) => {
     }
   });
   pgm.addConstraint('payMethods', 'payMethods_method_check', 'CHECK (method IN (\'cash\', \'card\', \'other\'))');
+  pgm.addConstraint('payMethods', 'payMethods_unique_user_method', 'UNIQUE (userId, method)');
 };
 
 /**

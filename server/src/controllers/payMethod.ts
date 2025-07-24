@@ -55,7 +55,7 @@ export const deletePayMethod = async (req: Request, res: Response) => {
   }
 }
 
-export const getPayMethod = async (req: Request, res: Response) => {
+export const getAllPayMethods = async (req: Request, res: Response) => {
   console.log("Retrieving payment methods");
   try {
     if (!req.user) {
@@ -72,4 +72,31 @@ export const getPayMethod = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(500).json({ error: "Internal server error" });
   }
-} 
+}
+
+export const editPayMethod = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const userId = req.user.id;
+    const payMethodId = req.body.id;
+    const method = req.body.method;
+    const name = req.body.name;
+    if (!method && !name) {
+      return res.status(400).json({ error: "No method or name provided" });
+    }
+    // Update payment method in the database
+    const result = await db.query(
+      "UPDATE \"payMethods\" SET method = COALESCE($1, method), name = COALESCE($2, name) WHERE id = $3 AND \"userId\" = $4 RETURNING *",
+      [method, name, payMethodId, userId]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Payment method not found" });
+    }
+    return res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error editing payment method:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}

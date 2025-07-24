@@ -6,12 +6,10 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
   if (!token) {
       return res.status(401).json({ error: "Unauthorized" });
   }
-
   const decoded = verifyJwt(token) as { id: string } | null;
   if (!decoded) {
       return res.status(401).json({ error: "Invalid token" });
   }
-
-  req.user = decoded; // Attach user info to request object
+  req.user = decoded; 
   next();
 };

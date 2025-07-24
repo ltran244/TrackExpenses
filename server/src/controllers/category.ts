@@ -30,12 +30,10 @@ export const createCategory = async (req: Request, res: Response) => {
       return res.status(201).json({ message: "Category created successfully" });
     }
     catch (error) {
-      console.error("Error creating category:", error);
       return res.status(400).json({ error: "Category already exists" });
     }
   }
   catch (error) {
-    console.error("Error creating category:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -63,7 +61,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
   }
 };
 
-export const getCategory = async (req: Request, res: Response) => {
+export const getAllCategories = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -74,6 +72,34 @@ export const getCategory = async (req: Request, res: Response) => {
     }
     const result = await db.query("SELECT id, name, color FROM categories WHERE \"userId\" = $1", [userId]);
     return res.status(200).json(result.rows);
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+export const editCategory = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const userId = req.user.id;
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+    const categoryId = req.body.categoryId;
+    const categoryName = req.body.categoryName;
+    const color = req.body.color;
+    if (!categoryId && !categoryName) {
+      return res.status(400).json({ error: "Category ID or name are required" });
+    }
+    const result = await db.query(
+      "UPDATE categories SET name = COALESCE($1, name), color = COALESCE($2, color) WHERE id = $3 AND \"userId\" = $4 RETURNING *",
+      [categoryName, color, categoryId, userId]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Category not found" });
+    }
+    return res.status(200).json(result.rows[0]);
   } catch (error) {
     return res.status(500).json({ error: "Internal server error" });
   }

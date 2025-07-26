@@ -1,7 +1,7 @@
 import { useNavigate , redirect } from "react-router";
 import {apiUrl} from "../../config/api";
 import { useState, useEffect } from "react";
-
+import ThisMonthTransactions from "./transactions/thisMonthTransactions";
 export default function Home () {
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -39,12 +39,12 @@ export default function Home () {
   }
   return(
     <div className="bg-background flex flex-col items-center min-h-screen">
-      <h1></h1>
-      <div>
+      <div className="mt-8 mb-4">
         <span className="text-2xl text-foreground font-Inter">
           {name ? `Hey there, ${name}!` : "Loading..."}
         </span>
       </div>
+      <ThisMonthTransactions />
       <div>
         <button className="bg-primary hover:bg-primary-hover border-1 w-3xs h-[50px] rounded-2xl flex justify-center items-center" onClick={handleLogout} >
           <span className="font-Inter text-center text-lg">

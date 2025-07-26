@@ -54,6 +54,7 @@ export const deleteTransaction = async (req: Request, res: Response) => {
 }
 
 export const getTransactions = async (req: Request, res: Response) => {
+  console.log("getTransactions called");
   try {
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -62,7 +63,7 @@ export const getTransactions = async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(400).json({ error: "User ID is required" });
     }
-    let query = "SELECT *, SUM()FROM transactions WHERE \"userId\" = $1";
+    let query = "SELECT * FROM transactions WHERE \"userId\" = $1";
     let params = [userId];
     const {categoryId, payMethodId, startDate, endDate, sortOrder, sortBy} = req.query;
     if (categoryId) {
@@ -74,6 +75,7 @@ export const getTransactions = async (req: Request, res: Response) => {
       params.push(payMethodId as string);
     }
     if (startDate) {
+      console.log("Start date:", startDate);
       query += ` AND date >= $${params.length + 1}`;
       params.push(new Date(startDate as string).toISOString());
     }
@@ -92,6 +94,7 @@ export const getTransactions = async (req: Request, res: Response) => {
       query, params
     );
     const totalPrice = 0;
+    console.log("result.rows:", result.rows);
     return res.status(200).json({items: result.rows, totalPrice: totalPrice});
   } catch (error) {
     console.error("Error retrieving transactions:", error);

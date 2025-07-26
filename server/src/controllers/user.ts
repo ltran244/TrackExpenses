@@ -2,7 +2,6 @@ import { Request, Response }from 'express';
 import db from "../config/db.config"
 import bcrypt from 'bcryptjs';
 export const getUserProfile = async (req: Request, res: Response) => {
-  console.log("Fetching user profile");
   try {
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });

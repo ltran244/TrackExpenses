@@ -46,8 +46,12 @@ export const up = (pgm) => {
       type: 'numeric',
       notNull: true
     },
+    date: {
+      type: 'timestamp',
+      notNull: true,
+      default: pgm.func('now()')
+    }
   });
-  pgm.addConstraint('transactions', 'transactions_name_check', 'CHECK (name != \'\')');
 };
 
 /**

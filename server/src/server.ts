@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 3000;
         app.use("/user", userRouter);
         app.use("/category", categoryRouter);
         app.use("/payMethod", payMethodRouter);
-        app.use("/transactions", transactionsRouter);
+        app.use("/transaction", transactionsRouter);
         app.listen(PORT, () => {
             console.log(`Server is successfully running on port ${PORT}`);
         });

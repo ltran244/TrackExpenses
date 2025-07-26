@@ -137,11 +137,11 @@ export default function Register(props:RegisterProps) {
           </span>
         </button>
       </div>
-      <button className="mt-6 bg-primary hover:bg-primary-hover border-1 w-3xs h-[50px] rounded-2xl flex justify-center items-center">
+      {/* <button className="mt-6 bg-primary hover:bg-primary-hover border-1 w-3xs h-[50px] rounded-2xl flex justify-center items-center">
         <span className="font-Inter text-center text-lg">
           Sign Up With Google
         </span>
-      </button>
+      </button> */}
     </div>
   );
 }

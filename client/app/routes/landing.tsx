@@ -1,4 +1,4 @@
-import type { Route } from "./+types/home";
+import type { Route } from "./+types/landing";
 import {Link} from "react-router"
 export function meta({}: Route.MetaArgs) {
   return [
@@ -7,7 +7,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Home() {
+export default function Landing() {
   return (
     <div className="flex flex-col items-center min-h-screen bg-background">
       <h1 className="mt-4 text-foreground font-Inter text-center text-4xl sm:text-5xl lg:text-6xl">

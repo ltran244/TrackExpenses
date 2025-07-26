@@ -41,7 +41,6 @@ export const register = async (req: Request, res: Response) => {
     if (!userName || !email || !password) {
       return res.status(400).json({ error: "Register request missing data" });
     }
-    // Check if username or email already exists
     const checkExist = await db.query("SELECT username, email FROM users WHERE LOWER(username) = LOWER($1) OR LOWER(email) = LOWER($2)", [userName, email]);
     const existingName = checkExist.rows.some((row) => row.username.toLowerCase() === userName.toLowerCase());
     const existingEmail = checkExist.rows.some((row) => row.email.toLowerCase() === email.toLowerCase());

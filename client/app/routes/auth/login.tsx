@@ -31,10 +31,8 @@ export default function Login(props: LoginProps) {
       console.log("Login successful", data);
       setBadAttempt(false);
       // Redirect to dashboard or another page
-      navigate("/dashboard");
-      console.log("Redirecting to dashboard");
+      navigate("/home");
     } catch (error) {
-      console.error("Login failed", error);
       setBadAttempt(true);
     }
   }
@@ -89,12 +87,12 @@ export default function Login(props: LoginProps) {
           </Link>
         </div>
       </div>
-      <button className="mt-6 bg-primary hover:bg-primary-hover border-1 w-3xs h-[50px] rounded-2xl flex justify-center items-center"
+      {/* <button className="mt-6 bg-primary hover:bg-primary-hover border-1 w-3xs h-[50px] rounded-2xl flex justify-center items-center"
         onClick={() => {setBadAttempt(!badAttempt)}}>
         <span className="font-Inter text-center text-lg">
           Login With Google
         </span>
-      </button>
+      </button> */}
     </div>
   );
 }

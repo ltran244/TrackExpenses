@@ -3,7 +3,6 @@ import db from "../config/db.config"
 
 export const createPayMethod = async (req: Request, res: Response) => {
   try {
-    console.log("Creating payment method");
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -16,18 +15,20 @@ export const createPayMethod = async (req: Request, res: Response) => {
     if (method != "card" && method != "cash" && method != "other") {
       return res.status(400).json({ error: "Invalid method" });
     }
-    // Insert new payment method into the database
-    try {
-      const result = await db.query(
-        "INSERT INTO \"payMethods\" (\"userId\", method, name) VALUES ($1, $2, $3) RETURNING *",
-        [userId, method, name]
-      );
-    return res.status(201).json(result.rows[0]);
-    }
-    catch (error) {
-      console.error("Error creating payment method:", error);
+    // Check if the payment method already exists for the user
+    const existingMethod = await db.query(
+      "SELECT * FROM \"payMethods\" WHERE \"userId\" = $1 AND method = $2 AND name = $3",
+      [userId, method, name]
+    );
+    if (existingMethod.rows.length > 0) {
       return res.status(400).json({ error: "Payment method already exists" });
     }
+    // Insert new payment method into the database
+    const result = await db.query(
+      "INSERT INTO \"payMethods\" (\"userId\", method, name) VALUES ($1, $2, $3) RETURNING *",
+      [userId, method, name]
+    );
+    return res.status(201).json(result.rows[0]);
   } catch (error) {
     console.log("Error creating payment method:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -56,12 +57,10 @@ export const deletePayMethod = async (req: Request, res: Response) => {
 }
 
 export const getAllPayMethods = async (req: Request, res: Response) => {
-  console.log("Retrieving payment methods");
   try {
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    console.log("User authenticated");
     const userId = req.user.id;
     // Retrieve payment methods for the user
     const result = await db.query(
